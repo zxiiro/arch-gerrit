@@ -1,0 +1,50 @@
+#!/bin/sh
+# vim:set ts=2 sw=2 et:
+
+# arg 1:  the new package version
+pre_install() {
+  /bin/true
+}
+
+_set_dir_permissions() {
+  echo ">>> Setting directory permissions..."
+  for d in /var/log/jenkins /var/lib/jenkins /var/cache/jenkins; do
+    chown -R jenkins:jenkins ${d}
+  done
+}
+
+# arg 1:  the new package version
+post_install() {
+  echo ">>> Creating jenkins user and group..."
+  getent passwd jenkins > /dev/null || /usr/sbin/useradd --user-group --home-dir "/var/lib/jenkins/" --shell "/bin/bash" jenkins &> /dev/null
+  _set_dir_permissions
+}
+
+# arg 1:  the new package version
+# arg 2:  the old package version
+pre_upgrade() {
+  /bin/true
+}
+
+# arg 1:  the new package version
+# arg 2:  the old package version
+post_upgrade() {
+  _set_dir_permissions
+}
+
+# arg 1:  the old package version
+pre_remove() {
+ /bin/true
+}
+
+# arg 1:  the old package version
+post_remove() {
+  getent passwd jenkins > /dev/null && /usr/sbin/userdel jenkins &>/dev/null
+  for d in "/var/cache/jenkins" "/var/log/jenkins"; do
+    [ -d "${d}" ] && rm -rf "${d}"
+  done
+  if [ -d /var/lib/jenkins ]; then
+    echo ">>> directory /var/lib/jenkins needs to be removed manually"
+  fi
+}
+
