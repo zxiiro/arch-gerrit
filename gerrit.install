@@ -18,6 +18,9 @@ post_install() {
   echo ">>> Creating gerrit user and group..."
   getent passwd gerrit > /dev/null || /usr/sbin/useradd --user-group --home-dir "/var/lib/gerrit/" --shell "/bin/bash" gerrit &> /dev/null
   _set_dir_permissions
+  echo ">>> To initialize gerrit, see http://gerrit-documentation.googlecode.com/svn/Documentation/${1}/index.html"
+  echo ">>> sudo su gerrit"
+  echo ">>> java -jar /usr/share/java/gerrit/gerrit.war init -d /srv/gerrit-review"
 }
 
 # arg 1:  the new package version
@@ -30,6 +33,9 @@ pre_upgrade() {
 # arg 2:  the old package version
 post_upgrade() {
   _set_dir_permissions
+  echo ">>> To update gerrit, see http://gerrit-documentation.googlecode.com/svn/ReleaseNotes/ReleaseNotes-${1}.html"
+  echo ">>> sudo su gerrit"
+  echo ">>> java -jar /usr/share/java/gerrit/gerrit.war init -d /srv/gerrit-review"
 }
 
 # arg 1:  the old package version

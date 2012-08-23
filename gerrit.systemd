@@ -9,15 +9,15 @@ EnvironmentFile=/etc/default/gerritcodereview
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=gerrit
-ExecStart=@/usr/bin/java gerrit -DGerritCodeReview=1 $JAVA_OPTIONS -jar $GERRIT_WAR daemon -d $GERRIT_SITE --console-log --run-id=$(/bin/date +%s)
+ExecStart=@/usr/bin/java gerrit -DGerritCodeReview=1 $JAVA_OPTIONS -jar $GERRIT_WAR daemon -d $GERRIT_SITE --console-log
 #MemoryLimit=768M
 OOMScoreAdjust=-1000
-LimitCPU=unlimited
-LimitFSIZE=unlimited
-LimitDATA=unlimited
+LimitCPU=infinity
+LimitFSIZE=infinity
+LimitDATA=infinity
 LimitCORE=0
-LimitAS=unlimited
-LimitLOCKS=unlimited
+LimitAS=infinity
+LimitLOCKS=infinity
 
 [Install]
 WantedBy=multi-user.target
