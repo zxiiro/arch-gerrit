@@ -7,20 +7,21 @@ pre_install() {
 }
 
 _set_dir_permissions() {
-  echo ">>> Setting directory permissions..."
-  for d in /var/lib/gerrit /srv/gerrit-review; do
+  echo "    setting directory permissions..."
+  for d in /var/lib/gerrit; do
     chown -R gerrit:gerrit ${d}
   done
 }
 
 # arg 1:  the new package version
 post_install() {
-  echo ">>> Creating gerrit user and group..."
+  echo "    creating user and group..."
   getent passwd gerrit > /dev/null || /usr/sbin/useradd --user-group --home-dir "/var/lib/gerrit/" --shell "/bin/bash" gerrit &> /dev/null
   _set_dir_permissions
-  echo ">>> To initialize gerrit, see http://gerrit-documentation.googlecode.com/svn/Documentation/${1}/index.html"
-  echo ">>> sudo su gerrit"
-  echo ">>> java -jar /usr/share/java/gerrit/gerrit.war init -d /srv/gerrit-review"
+  echo "    To initialize gerrit, see http://gerrit-documentation.googlecode.com/svn/Documentation/2.4.2/index.html"
+  echo "    To setup gerrit do:"
+  echo "      sudo su - gerrit"
+  echo "      java -jar /usr/share/java/gerrit/gerrit.war init -d /var/lib/gerrit"
 }
 
 # arg 1:  the new package version
@@ -33,9 +34,10 @@ pre_upgrade() {
 # arg 2:  the old package version
 post_upgrade() {
   _set_dir_permissions
-  echo ">>> To update gerrit, see http://gerrit-documentation.googlecode.com/svn/ReleaseNotes/ReleaseNotes-${1}.html"
-  echo ">>> sudo su gerrit"
-  echo ">>> java -jar /usr/share/java/gerrit/gerrit.war init -d /srv/gerrit-review"
+  echo "    To update gerrit, see http://gerrit-documentation.googlecode.com/svn/ReleaseNotes/ReleaseNotes-2.4.2.html"
+  echo "    To update gerrit do:"
+  echo "      sudo su - gerrit"
+  echo "      java -jar /usr/share/java/gerrit/gerrit.war init -d /var/lib/gerrit"
 }
 
 # arg 1:  the old package version
@@ -46,9 +48,9 @@ pre_remove() {
 # arg 1:  the old package version
 post_remove() {
   getent passwd gerrit > /dev/null && /usr/sbin/userdel gerrit &>/dev/null
-  for d in /var/lib/gerrit /srv/gerrit-review; do
+  for d in /var/lib/gerrit; do
     if [ -d $d ]; then
-      echo ">>> directory $d needs to be removed manually"
+      echo "    directory $d needs to be removed manually"
     fi
   done
 }
