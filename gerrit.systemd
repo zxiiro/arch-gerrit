@@ -1,13 +1,23 @@
 [Unit]
-Description=Jenkins CI
+Description=Web based code review and project management for Git based projects
 After=network.target
 
 [Service]
-EnvironmentFile=/etc/conf.d/jenkins
-Type=forking
-User=jenkins
-StandardInput=null
-ExecStart=/bin/bash -l -c "${JAVA} ${JAVA_ARGS} -jar ${JENKINS_WAR} ${JENKINS_ARGS} >> ${JENKINS_LOG} 2>&1 &"
+Type=simple
+User=gerrit
+EnvironmentFile=/etc/default/gerritcodereview
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=gerrit
+ExecStart=@/usr/bin/java gerrit -DGerritCodeReview=1 $JAVA_OPTIONS -jar $GERRIT_WAR daemon -d $GERRIT_SITE --console-log --run-id=$(/bin/date +%s)
+#MemoryLimit=768M
+OOMScoreAdjust=-1000
+LimitCPU=unlimited
+LimitFSIZE=unlimited
+LimitDATA=unlimited
+LimitCORE=0
+LimitAS=unlimited
+LimitLOCKS=unlimited
 
 [Install]
 WantedBy=multi-user.target

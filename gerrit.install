@@ -8,15 +8,15 @@ pre_install() {
 
 _set_dir_permissions() {
   echo ">>> Setting directory permissions..."
-  for d in /var/log/jenkins /var/lib/jenkins /var/cache/jenkins; do
-    chown -R jenkins:jenkins ${d}
+  for d in /var/lib/gerrit /srv/gerrit-review; do
+    chown -R gerrit:gerrit ${d}
   done
 }
 
 # arg 1:  the new package version
 post_install() {
-  echo ">>> Creating jenkins user and group..."
-  getent passwd jenkins > /dev/null || /usr/sbin/useradd --user-group --home-dir "/var/lib/jenkins/" --shell "/bin/bash" jenkins &> /dev/null
+  echo ">>> Creating gerrit user and group..."
+  getent passwd gerrit > /dev/null || /usr/sbin/useradd --user-group --home-dir "/var/lib/gerrit/" --shell "/bin/bash" gerrit &> /dev/null
   _set_dir_permissions
 }
 
@@ -39,12 +39,11 @@ pre_remove() {
 
 # arg 1:  the old package version
 post_remove() {
-  getent passwd jenkins > /dev/null && /usr/sbin/userdel jenkins &>/dev/null
-  for d in "/var/cache/jenkins" "/var/log/jenkins"; do
-    [ -d "${d}" ] && rm -rf "${d}"
+  getent passwd gerrit > /dev/null && /usr/sbin/userdel gerrit &>/dev/null
+  for d in /var/lib/gerrit /srv/gerrit-review; do
+    if [ -d $d ]; then
+      echo ">>> directory $d needs to be removed manually"
+    fi
   done
-  if [ -d /var/lib/jenkins ]; then
-    echo ">>> directory /var/lib/jenkins needs to be removed manually"
-  fi
 }
 

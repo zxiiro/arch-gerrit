@@ -16,15 +16,14 @@ optdepends=()
 provides=()
 conflicts=()
 replaces=()
-backup=(etc/conf.d/gerrit etc/logrotate.d/gerrit)
+backup=(etc/default/gerritcodereview)
 options=()
 install=gerrit.install
 changelog=changelog
 source=(gerrit.war::http://gerrit.googlecode.com/files/gerrit-$pkgver.war
         gerrit.conf
         gerrit.rcd
-        gerrit.systemd
-        logrotate)
+        gerrit.systemd)
 noextract=(gerrit.war)
 sha256sums=()
 package() {
@@ -32,10 +31,8 @@ package() {
   install -D -m 755 "$srcdir/gerrit.rcd" "$pkgdir/etc/rc.d/gerrit"
   install -D -m 644 "$srcdir/gerrit.systemd" "$pkgdir/etc/systemd/system/gerrit.service"
   install -D -m 644 "$srcdir/gerrit.conf" "$pkgdir/etc/default/gerritcodereview"
-  install -D -m 644 "$srcdir/logrotate" "${pkgdir}/etc/logrotate.d/gerrit"
-  install -m 755 -d "$pkgdir/var/log/gerrit"
   install -m 755 -d "$pkgdir/var/lib/gerrit"
-  install -m 755 -d "$pkgdir/var/cache/gerrit/war"
+  install -m 755 -d "$pkgdir/srv/gerrit-review"
 }
 
 # vim:set ts=2 sw=2 et:
